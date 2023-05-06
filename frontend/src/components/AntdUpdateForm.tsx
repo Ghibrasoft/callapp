@@ -1,34 +1,44 @@
-import { Modal, Input, Button, Form, Spin, Select } from 'antd';
+import { Input, Form, Spin, Select } from 'antd';
 import { useModalForm } from 'sunflower-antd/lib/useModalForm';
-import { IoMdPersonAdd } from 'react-icons/io';
 import axios from 'axios';
-import { IPerson } from '../store/ZustandStore';
+import { IPerson, fetchData } from '../store/ZustandStore';
+import { useEffect } from 'react';
 
 
 const { Option } = Select;
 
-export default (formVal: any) => {
+interface AntdUpdateFormProps {
+    initialValues?: IPerson;
+    form: any;
+}
+
+
+export function AntdUpdateForm({ initialValues }: AntdUpdateFormProps) {
     const [form] = Form.useForm();
+
+    useEffect(() => {
+        if (initialValues) {
+            form.setFieldsValue(initialValues);
+        }
+    }, [form, initialValues]);
+
+
     const {
-        modalProps,
         formProps,
-        show,
         formLoading,
-        formValues,
-        formResult,
     } = useModalForm({
         defaultVisible: false,
         autoSubmitClose: true,
         autoResetForm: true,
-        async submit(values) { 
+        async submit(values) {
             const { name, email, gender, address, phone } = values;
-            
-            console.log('beforeSubmit');
-            await axios.post<IPerson>('http://localhost:3001/persons', {
+
+            console.log('beforeUpdate');
+            await axios.put<IPerson>('http://localhost:3001/persons', {
                 name, email, gender, address, phone
             })
-            await new Promise(r => setTimeout(r, 1000));
-            console.log('afterSubmit', name, email, gender, address, phone);
+            fetchData();
+            console.log('afterUpdate', name, email, gender, address, phone);
             return 'ok';
         },
         form,
@@ -54,6 +64,8 @@ export default (formVal: any) => {
                 <Form
                     layout="vertical"
                     {...formProps}
+                    form={form}
+                    initialValues={initialValues}
                 >
                     <Form.Item
                         // label="Name"
@@ -84,14 +96,14 @@ export default (formVal: any) => {
 
                     <Form.Item
                         // label="Street" 
-                        name={['street']}
+                        name={['address', 'street']}
                         rules={[{ required: true }]}>
                         <Input placeholder='*Street...' />
                     </Form.Item>
 
                     <Form.Item
                         // label="City"
-                        name={['city']}
+                        name={['address', 'city']}
                         rules={[{ required: true }]}>
                         <Input placeholder='*City...' />
                     </Form.Item>
@@ -102,7 +114,6 @@ export default (formVal: any) => {
                         rules={[{ required: true, message: 'Please input your phone number!' }]}
                     >
                         <Input
-                            // pattern='^\+\d{1,2}\s\(\d{3}\)\s\d{3}\-\d{4}$'
                             addonBefore={prefixSelector}
                             style={{ width: '100%' }}
                             placeholder='*Phone number...'

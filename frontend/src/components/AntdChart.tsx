@@ -1,6 +1,5 @@
 import { Pie } from '@ant-design/plots';
 import { usePersonStore } from '../store/ZustandStore';
-import { useNavigate } from 'react-router-dom';
 
 export function AntdChart() {
     const { data } = usePersonStore();

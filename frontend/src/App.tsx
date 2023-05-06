@@ -1,6 +1,6 @@
-import { Space, Layout, Button, Row, Col } from "antd";
+import { Space, Layout } from "antd";
 import { AntdTable } from "./components/AntdTable";
-import AntModalForm from "./components/AntModalForm";
+import { AntModalForm } from "./components/AntModalForm";
 
 
 const { Content } = Layout;
