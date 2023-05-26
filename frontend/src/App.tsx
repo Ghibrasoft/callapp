@@ -1,6 +1,6 @@
 import { Space, Layout } from "antd";
-import { AntdTable } from "./components/AntdTable";
-import { AntModalForm } from "./components/AntModalForm";
+import { AntdTable } from "./components/Table";
+import { AddPerson } from "./components/AddPerson";
 
 
 const { Content } = Layout;
@@ -18,7 +18,7 @@ function App() {
       <Layout>
         <Content style={contentStyle}>
           <div style={{ display: 'flex', justifyContent: 'end', alignItems: 'center', gap: 15, margin: '10px' }}>
-            <AntModalForm />
+            <AddPerson />
           </div>
           <AntdTable />
         </Content>

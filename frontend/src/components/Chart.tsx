@@ -1,7 +1,7 @@
 import { Pie } from '@ant-design/plots';
 import { usePersonStore } from '../store/ZustandStore';
 
-export function AntdChart() {
+export function Chart() {
     const { data } = usePersonStore();
 
     const config = {

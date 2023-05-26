@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import 'antd/dist/reset.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { AntdChart } from './components/AntdChart';
+import { Chart } from './components/Chart';
 import { Navbar } from './components/Navbar';
 
 
@@ -17,7 +17,7 @@ root.render(
       <Navbar />
       <Routes>
         <Route path='/' element={<App />} />
-        <Route path='chart' element={<AntdChart />} />
+        <Route path='chart' element={<Chart />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

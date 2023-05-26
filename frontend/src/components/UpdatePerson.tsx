@@ -1,20 +1,20 @@
 import { Input, Form, Spin, Select } from 'antd';
 import { useModalForm } from 'sunflower-antd/lib/useModalForm';
-import axios from 'axios';
-import { IPerson, fetchData } from '../store/ZustandStore';
+import { IPerson, usePersonStore } from '../store/ZustandStore';
 import { useEffect } from 'react';
 
 
 const { Option } = Select;
 
-interface AntdUpdateFormProps {
+interface IUpdateFormProps {
     initialValues?: IPerson;
     form: any;
 }
 
 
-export function AntdUpdateForm({ initialValues }: AntdUpdateFormProps) {
-    const [form] = Form.useForm();
+export function UpdatePerson({ initialValues, form }: IUpdateFormProps) {
+    // const [form] = Form.useForm();
+    const { getData, putData, currentPage, } = usePersonStore();
 
     useEffect(() => {
         if (initialValues) {
@@ -31,17 +31,12 @@ export function AntdUpdateForm({ initialValues }: AntdUpdateFormProps) {
         autoSubmitClose: true,
         autoResetForm: true,
         async submit(values) {
-            const { name, email, gender, address, phone } = values;
-
-            console.log('beforeUpdate');
-            await axios.put<IPerson>('http://localhost:3001/persons', {
-                name, email, gender, address, phone
-            })
-            fetchData();
-            console.log('afterUpdate', name, email, gender, address, phone);
+            const { id } = values;
+            await putData(id, values);
+            getData(currentPage, 20);
             return 'ok';
         },
-        form,
+        // form,
     });
 
     const prefixSelector = (

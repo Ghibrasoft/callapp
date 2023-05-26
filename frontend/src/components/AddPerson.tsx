@@ -1,13 +1,13 @@
 import { Modal, Input, Button, Form, Spin, Select } from 'antd';
 import { useModalForm } from 'sunflower-antd/lib/useModalForm';
 import { IoMdPersonAdd } from 'react-icons/io';
-import axios from 'axios';
-import { IPerson, fetchData } from '../store/ZustandStore';
+import { usePersonStore } from '../store/ZustandStore';
 
 
 const { Option } = Select;
 
-export function AntModalForm() {
+export function AddPerson() {
+    const { getData, postData, currentPage } = usePersonStore();
     const [form] = Form.useForm();
     const {
         modalProps,
@@ -18,15 +18,9 @@ export function AntModalForm() {
         defaultVisible: false,
         autoSubmitClose: true,
         autoResetForm: true,
-        async submit(values) { 
-            const { name, email, gender, address, phone } = values;
-
-            console.log('beforeSubmitFromModalForm');
-            await axios.post<IPerson>('http://localhost:3001/persons', {
-                name, email, gender, address, phone
-            })
-            fetchData();
-            console.log('afterSubmitFromModalForm', name, email, gender, address, phone);
+        async submit(values) {
+            await postData(values);
+            getData(currentPage, 20);
             return 'ok';
         },
         form,
