@@ -14,7 +14,7 @@ interface IUpdateFormProps {
 
 export function UpdatePerson({ initialValues, form }: IUpdateFormProps) {
     // const [form] = Form.useForm();
-    const { getData, putData, currentPage, } = usePersonStore();
+    const { getPersons, putPerson, currentPage, } = usePersonStore();
 
     useEffect(() => {
         if (initialValues) {
@@ -32,8 +32,8 @@ export function UpdatePerson({ initialValues, form }: IUpdateFormProps) {
         autoResetForm: true,
         async submit(values) {
             const { id } = values;
-            await putData(id, values);
-            getData(currentPage, 20);
+            await putPerson(id, values);
+            getPersons(currentPage, 20);
             return 'ok';
         },
         // form,

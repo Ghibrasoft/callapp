@@ -7,7 +7,7 @@ import { usePersonStore } from '../store/ZustandStore';
 const { Option } = Select;
 
 export function AddPerson() {
-    const { getData, postData, currentPage } = usePersonStore();
+    const { getPersons, postPerson, currentPage } = usePersonStore();
     const [form] = Form.useForm();
     const {
         modalProps,
@@ -19,8 +19,8 @@ export function AddPerson() {
         autoSubmitClose: true,
         autoResetForm: true,
         async submit(values) {
-            await postData(values);
-            getData(currentPage, 20);
+            await postPerson(values);
+            getPersons(currentPage, 20);
             return 'ok';
         },
         form,

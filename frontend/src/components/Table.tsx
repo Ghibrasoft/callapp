@@ -9,7 +9,7 @@ import { useModalForm } from 'sunflower-antd/lib/useModalForm';
 
 export function AntdTable() {
     const [formVal, setFormVal] = useState<IPerson>();
-    const { getData, delData, rows, currentPage } = usePersonStore();
+    const { getPersons, delPerson, rows, currentPage, allPersonsLength } = usePersonStore();
     // table cols
     const columns: ColumnsType<IPerson> = [
         {
@@ -47,7 +47,7 @@ export function AntdTable() {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button type='dashed' onClick={() => delData(record.id, rows).then(() => getData(currentPage, 20))}>Delete</Button>
+                    <Button type='dashed' onClick={() => delPerson(record.id, rows).then(() => getPersons(currentPage, 20))}>Delete</Button>
                 </Space>
             ),
         },
@@ -69,8 +69,8 @@ export function AntdTable() {
 
 
     useEffect(() => {
-        getData(currentPage, 20);
-    }, [currentPage, getData]);
+        getPersons(currentPage, 20);
+    }, [currentPage, getPersons]);
 
     return (
         <>
@@ -84,6 +84,14 @@ export function AntdTable() {
                             setFormVal(record);
                         }
                     }
+                }}
+                pagination={{
+                    current: currentPage,
+                    pageSize: 20,
+                    // pageSizeOptions: [10, 20, 50],
+                    showSizeChanger: false,
+                    total: allPersonsLength,
+                    onChange: (currPage) => getPersons(currPage, 20)
                 }}
             />
 

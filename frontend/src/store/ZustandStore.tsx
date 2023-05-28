@@ -15,6 +15,11 @@ export interface IPerson {
     phone: string;
 }
 
+interface IChartData {
+    type: string;
+    value: number;
+}
+
 interface IPersonStore {
     rows: IPerson[];
     currentPage: number;
@@ -22,14 +27,13 @@ interface IPersonStore {
     totalPages: number;
     setTotalPages: (totalPages: number) => void;
     allPersonsLength: number;
-    getData: (page: number, limit: number) => Promise<void>;
-    postData: (personData: Store) => Promise<void>;
-    putData: (id: StoreValue, editedPerson: Store) => Promise<void>;
-    delData: (id: string, rows: IPerson[]) => Promise<void>;
+    getPersons: (page: number, limit: number) => Promise<void>;
+    postPerson: (personData: Store) => Promise<void>;
+    putPerson: (id: StoreValue, editedPerson: Store) => Promise<void>;
+    delPerson: (id: string, rows: IPerson[]) => Promise<void>;
 
-    data: { type: string, value: number }[];
-    setChartData: (chartData: { type: string, value: number }[]) => void;
-
+    data: IChartData[];
+    setChartData: (chartData: IChartData[]) => void;
 }
 
 // custom hook
@@ -40,29 +44,33 @@ export const usePersonStore = create<IPersonStore>((set) => ({
     totalPages: 0,
     setTotalPages: (totalPages: number) => set({ totalPages }),
     allPersonsLength: 0,
-    getData: async (page = 1, limit = 20) => {
+    getPersons: async (page = 1, limit = 20) => {
         try {
             const res = await axios.get("http://localhost:3001/Persons", { params: { page, limit } })
-            set(res.data);
+            const { rows, currentPage, totalPages, allPersonsLength, cities } = res.data;
+            set({ rows, currentPage, totalPages, allPersonsLength });
+
+            const chartData = cities.map((city: string) => ({ type: city, value: 0 }));
+            set({ data: chartData });
         } catch (error) {
             console.log(error);
         }
     },
-    postData: async (personData: Store) => {
+    postPerson: async (personData: Store) => {
         try {
             await axios.post("http://localhost:3001/Persons", personData)
         } catch (error) {
             console.log(error);
         }
     },
-    putData: async (id: StoreValue, editedPerson: Store) => {
+    putPerson: async (id: StoreValue, editedPerson: Store) => {
         try {
             await axios.put(`http://localhost:3001/Persons/${id}`, editedPerson)
         } catch (error) {
             console.log(error);
         }
     },
-    delData: async (id: string, rows: IPerson[]) => {
+    delPerson: async (id: string, rows: IPerson[]) => {
         try {
             await axios.delete(`http://localhost:3001/Persons/${id}`)
             const filteredRow = rows.filter((row) => row.id !== id)
@@ -71,6 +79,7 @@ export const usePersonStore = create<IPersonStore>((set) => ({
             console.log(error);
         }
     },
+
 
     data: [],
     setChartData: (data) => set({ data }),

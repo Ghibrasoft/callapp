@@ -4,6 +4,8 @@ import { usePersonStore } from '../store/ZustandStore';
 export function Chart() {
     const { data } = usePersonStore();
 
+    console.log(data)
+
     const config = {
         appendPadding: 10,
         data,

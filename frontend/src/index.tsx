@@ -17,7 +17,7 @@ root.render(
       <Navbar />
       <Routes>
         <Route path='/' element={<App />} />
-        <Route path='chart' element={<Chart />} />
+        <Route path='/chart' element={<Chart />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

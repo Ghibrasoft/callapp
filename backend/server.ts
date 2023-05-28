@@ -17,6 +17,7 @@ const sequelize = new Sequelize({
   username: process.env.user,
   password: process.env.password,
   database: process.env.dbname,
+  define: { freezeTableName: true },
 });
 
 const Persons = sequelize.define("Persons", {
@@ -35,38 +36,54 @@ const Persons = sequelize.define("Persons", {
     type: DataTypes.STRING,
   },
   address: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
   },
   phone: {
     type: DataTypes.STRING,
   },
 });
 
-async function addModel() {
-  await Persons.sync();
-  console.log("Database sync success!");
+// drop association and tables
+async function dropTables() {
+  await Persons.drop();
+  console.log("Tables dropped successfully");
 }
-addModel();
+// sync the models
+async function syncModels() {
+  await Persons.sync();
+  console.log("Sync tables success");
+}
+// drop tables and sync models
+async function resetDb() {
+  try {
+    await dropTables();
+    await syncModels();
+  } catch (error) {
+    console.log(error);
+  }
+}
+// resetDb();
 
 // create random persons
-function addPersons() {
-  for (let i = 1; i <= 20; i++) {
+async function addPersons() {
+  for (let i = 1; i <= 10; i++) {
     const newPerson = Persons.build({
       name: chance.name(),
       email: chance.email(),
       gender: chance.gender(),
+      phone: chance.phone(),
       address: {
         street: chance.street(),
         city: chance.city(),
       },
-      phone: chance.phone(),
     });
-    newPerson.save();
+    await newPerson.save();
   }
+  console.log("Persons added successfully!");
 }
 // addPersons();
 
-// GET
+// GET Persons
 app.get("/Persons", async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1;
   const limit = 20;
@@ -78,9 +95,23 @@ app.get("/Persons", async (req: Request, res: Response) => {
     order: [["name", "ASC"]],
   });
 
+  const cityCounts = await Persons.findAll({
+    attributes: [
+      [sequelize.literal("address->>'city'"), "city"],
+      [sequelize.fn("COUNT", sequelize.col("id")), "count"],
+    ],
+    group: ["city"],
+  });
+
+  const cities = cityCounts.map((cityCount) => ({
+    city: cityCount.getDataValue("city"),
+    value: cityCount.getDataValue("count"),
+  }));
+
   const allPersonsLength = await Persons.count();
   const data = {
     rows,
+    cities,
     totalPages: Math.ceil(count / limit),
     currentPage: page,
     allPersonsLength,
