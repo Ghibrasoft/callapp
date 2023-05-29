@@ -65,16 +65,40 @@ async function resetDb() {
 // resetDb();
 
 // create random persons
+const citiesOfGeorgia = [
+  "Kutaisi",
+  "Tskaltubo",
+  "Oni",
+  "Ozurgeti",
+  "Tbilisi",
+  "Batumi",
+  "Zestafoni",
+  "Zugdidi",
+  "Rustavi",
+  "Gori",
+];
+const streetsOfGeorgia = [
+  "D. Aghmashenebeli",
+  "Tamar mefe",
+  "Archil Mefe",
+  "Sh. Rustaveli",
+  "G. Robakidze",
+  "I. Chavchavadze",
+  "A. Tsereteli",
+  "K. Gamsakhurdia",
+  "M. Kostava",
+  "I. Javakhishvili",
+];
 async function addPersons() {
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 85; i++) {
     const newPerson = Persons.build({
       name: chance.name(),
       email: chance.email(),
       gender: chance.gender(),
       phone: chance.phone(),
       address: {
-        street: chance.street(),
-        city: chance.city(),
+        street: chance.pickone(streetsOfGeorgia),
+        city: chance.pickone(citiesOfGeorgia),
       },
     });
     await newPerson.save();
@@ -104,8 +128,8 @@ app.get("/Persons", async (req: Request, res: Response) => {
   });
 
   const cities = cityCounts.map((cityCount) => ({
-    city: cityCount.getDataValue("city"),
-    value: cityCount.getDataValue("count"),
+    type: cityCount.getDataValue("city"),
+    value: Number(cityCount.getDataValue("count")),
   }));
 
   const allPersonsLength = await Persons.count();

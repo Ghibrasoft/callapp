@@ -48,10 +48,10 @@ export const usePersonStore = create<IPersonStore>((set) => ({
         try {
             const res = await axios.get("http://localhost:3001/Persons", { params: { page, limit } })
             const { rows, currentPage, totalPages, allPersonsLength, cities } = res.data;
+            // for table
             set({ rows, currentPage, totalPages, allPersonsLength });
-
-            const chartData = cities.map((city: string) => ({ type: city, value: 0 }));
-            set({ data: chartData });
+            // for pie chart
+            set({ data: cities });
         } catch (error) {
             console.log(error);
         }

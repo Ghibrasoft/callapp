@@ -91,6 +91,7 @@ export function AntdTable() {
                     // pageSizeOptions: [10, 20, 50],
                     showSizeChanger: false,
                     total: allPersonsLength,
+                    showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} persons`,
                     onChange: (currPage) => getPersons(currPage, 20)
                 }}
             />
