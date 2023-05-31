@@ -29,7 +29,7 @@ interface IPersonStore {
     allPersonsLength: number;
     getPersons: (page: number, limit: number) => Promise<void>;
     postPerson: (personData: Store) => Promise<void>;
-    putPerson: (id: StoreValue, editedPerson: Store) => Promise<void>;
+    putPerson: (id: string, rows: IPerson[], editedPerson: Store) => Promise<void>;
     delPerson: (id: string, rows: IPerson[]) => Promise<void>;
 
     data: IChartData[];
@@ -58,14 +58,24 @@ export const usePersonStore = create<IPersonStore>((set) => ({
     },
     postPerson: async (personData: Store) => {
         try {
-            await axios.post("http://localhost:3001/Persons", personData)
+            await axios.post("http://localhost:3001/persons", personData)
         } catch (error) {
             console.log(error);
         }
     },
-    putPerson: async (id: StoreValue, editedPerson: Store) => {
+    putPerson: async (id: string, rows: IPerson[], editedPerson: Store) => {
         try {
-            await axios.put(`http://localhost:3001/Persons/${id}`, editedPerson)
+            const rowToUpdate = rows.find((row) => row.id === id);
+            if (!rowToUpdate) {
+                throw new Error(`Couldn't find a row with ID : ${id}`);
+            }
+
+            const updatedData = await axios.put(`http://localhost:3001/Persons/${id}`, editedPerson)
+
+            const updatedRows = rows.map((row) =>
+                row.id === id ? { ...row, ...updatedData.data } : row
+            );
+            set({ rows: updatedRows })
         } catch (error) {
             console.log(error);
         }

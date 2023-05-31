@@ -9,6 +9,7 @@ import { useModalForm } from 'sunflower-antd/lib/useModalForm';
 
 export function AntdTable() {
     const [formVal, setFormVal] = useState<IPerson>();
+    const [selectedRowId, setSelectedRowId] = useState("");
     const { getPersons, delPerson, rows, currentPage, allPersonsLength } = usePersonStore();
     // table cols
     const columns: ColumnsType<IPerson> = [
@@ -82,6 +83,7 @@ export function AntdTable() {
                         onDoubleClick: () => {
                             setIsModalVisible(true);
                             setFormVal(record);
+                            setSelectedRowId(record.id);
                         }
                     }
                 }}
@@ -97,11 +99,15 @@ export function AntdTable() {
             />
 
             {/* onDoubleClick modal/form */}
-            <Modal {...modalProps} title="Update Person" okText="submit" width={400}
+            <Modal
+                {...modalProps}
+                title="Update Person"
+                okText="Update"
+                width={400}
                 open={isModalVisible}
                 onCancel={closeModal}
             >
-                <UpdatePerson initialValues={formVal} form={form} />
+                <UpdatePerson rows={rows} selectedRowId={selectedRowId} initialValues={formVal} form={form} />
             </Modal>
         </>
     )

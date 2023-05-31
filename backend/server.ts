@@ -8,6 +8,7 @@ import express from "express";
 dotenv.config();
 const chance = new Chance();
 const app: Express = express();
+app.use(express.json());
 app.use(cors({ origin: "http://localhost:3000" }));
 
 const sequelize = new Sequelize({
@@ -90,7 +91,7 @@ const streetsOfGeorgia = [
   "I. Javakhishvili",
 ];
 async function addPersons() {
-  for (let i = 1; i <= 85; i++) {
+  for (let i = 1; i <= 5; i++) {
     const newPerson = Persons.build({
       name: chance.name(),
       email: chance.email(),
@@ -199,5 +200,5 @@ app.delete("/Persons/:id", async (req: Request, res: Response) => {
 });
 
 app.listen(3001, () => {
-  console.log("Server running on port: 3001");
+  console.log("Server running on: 3001");
 });

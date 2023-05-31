@@ -45,6 +45,7 @@ export function AddPerson() {
                     <Form
                         layout="vertical"
                         {...formProps}
+                        form={form}
                     >
                         <Form.Item
                             // label="Name"

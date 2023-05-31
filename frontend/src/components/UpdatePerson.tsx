@@ -7,13 +7,14 @@ import { useEffect } from 'react';
 const { Option } = Select;
 
 interface IUpdateFormProps {
+    rows: IPerson[],
+    selectedRowId: string;
     initialValues?: IPerson;
     form: any;
 }
 
 
-export function UpdatePerson({ initialValues, form }: IUpdateFormProps) {
-    // const [form] = Form.useForm();
+export function UpdatePerson({ rows, selectedRowId, initialValues, form }: IUpdateFormProps) {
     const { getPersons, putPerson, currentPage, } = usePersonStore();
 
     useEffect(() => {
@@ -21,7 +22,6 @@ export function UpdatePerson({ initialValues, form }: IUpdateFormProps) {
             form.setFieldsValue(initialValues);
         }
     }, [form, initialValues]);
-
 
     const {
         formProps,
@@ -31,12 +31,10 @@ export function UpdatePerson({ initialValues, form }: IUpdateFormProps) {
         autoSubmitClose: true,
         autoResetForm: true,
         async submit(values) {
-            const { id } = values;
-            await putPerson(id, values);
+            await putPerson(selectedRowId, rows, values)
             getPersons(currentPage, 20);
             return 'ok';
         },
-        // form,
     });
 
     const prefixSelector = (
