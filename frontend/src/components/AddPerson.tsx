@@ -1,4 +1,4 @@
-import { Modal, Input, Button, Form, Spin, Select } from 'antd';
+import { Modal, Input, Button, Form, Spin, Select, message } from 'antd';
 import { useModalForm } from 'sunflower-antd/lib/useModalForm';
 import { IoMdPersonAdd } from 'react-icons/io';
 import { usePersonStore } from '../store/ZustandStore';
@@ -20,6 +20,7 @@ export function AddPerson() {
         autoResetForm: true,
         async submit(values) {
             await postPerson(values);
+            message.success("New person successfully added");
             getPersons(currentPage, 20);
             return 'ok';
         },
@@ -36,7 +37,7 @@ export function AddPerson() {
     );
 
     return (
-        <div>
+        <>
             <Modal {...modalProps} title="Add Person" okText="submit" width={400}>
                 <Spin spinning={formLoading}>
                     <p>
@@ -108,8 +109,9 @@ export function AddPerson() {
                 className='ant-btn-lg'
                 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             >
-                <IoMdPersonAdd size={20} />Add
+                <IoMdPersonAdd size={20} />
+                <span style={{ marginLeft: "5px" }}>Add Person</span>
             </Button>
-        </div>
+        </>
     );
 };

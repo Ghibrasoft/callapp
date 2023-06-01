@@ -1,4 +1,4 @@
-import { Button, Form, Modal, Space, Table } from 'antd';
+import { Button, Form, Modal, Space, Table, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { IPerson, usePersonStore } from '../store/ZustandStore';
 import { useEffect, useState } from 'react';
@@ -8,9 +8,9 @@ import { useModalForm } from 'sunflower-antd/lib/useModalForm';
 
 
 export function AntdTable() {
+    const { getPersons, putPerson, delPerson, rows, currentPage, allPersonsLength, word } = usePersonStore();
     const [formVal, setFormVal] = useState<IPerson>();
     const [selectedRowId, setSelectedRowId] = useState("");
-    const { getPersons, putPerson, delPerson, rows, currentPage, allPersonsLength } = usePersonStore();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const closeModal = () => {
         setIsModalVisible(false);
@@ -27,7 +27,10 @@ export function AntdTable() {
     }
     const deletePerson = async (record: IPerson) => {
         await delPerson(record.id, rows)
-            .then(() => getPersons(currentPage, 20))
+            .then(() => {
+                message.success("Person successfully deleted");
+                getPersons(currentPage, 20);
+            })
             .catch((error) => {
                 console.log("Error deleting person", error)
             })
@@ -85,6 +88,7 @@ export function AntdTable() {
         async submit(formValues) {
             await putPerson(selectedRowId, rows, formValues)
             getPersons(currentPage, 20);
+            message.success("Person successfully updated");
             closeModal();
             return 'ok';
         },
@@ -99,7 +103,16 @@ export function AntdTable() {
         <>
             <Table
                 columns={columns}
-                dataSource={rows.map((person) => ({ ...person, key: person.id }))}
+                dataSource={
+                    rows
+                        .filter(({ name, email, gender, address: { city, street }, }) =>
+                            name.toLocaleLowerCase().includes(word) ||
+                            email.toLocaleLowerCase().includes(word) ||
+                            gender.toLocaleLowerCase() === word ||
+                            city.toLocaleLowerCase().includes(word) ||
+                            street.toLocaleLowerCase().includes(word))
+                        .map((person) => ({ ...person, key: person.id }))
+                }
                 onRow={(record) => {
                     return {
                         onDoubleClick: () => {
@@ -118,6 +131,7 @@ export function AntdTable() {
                     showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} persons`,
                     onChange: (currPage) => getPersons(currPage, 20)
                 }}
+                scroll={{ x: "max-content" }}
             />
 
             {/* onDoubleClick modal/form */}

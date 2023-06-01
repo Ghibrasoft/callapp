@@ -31,12 +31,12 @@ interface IPersonStore {
     postPerson: (personData: Store) => Promise<void>;
     putPerson: (id: string, rows: IPerson[], editedPerson: Store) => Promise<void>;
     delPerson: (id: string, rows: IPerson[]) => Promise<void>;
-
+    word: string;
+    setWord: (word: string) => void;
     data: IChartData[];
     setChartData: (chartData: IChartData[]) => void;
 }
 
-// custom hook
 export const usePersonStore = create<IPersonStore>((set) => ({
     rows: [],
     currentPage: 1,
@@ -89,8 +89,8 @@ export const usePersonStore = create<IPersonStore>((set) => ({
             console.log(error);
         }
     },
-
-
+    word: "",
+    setWord: (word: string) => { set({ word }) },
     data: [],
     setChartData: (data) => set({ data }),
 }));
