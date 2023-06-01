@@ -1,4 +1,4 @@
-import { Store, StoreValue } from "antd/es/form/interface";
+import { Store } from "antd/es/form/interface";
 import axios from "axios";
 import { create } from "zustand";
 

@@ -1,21 +1,18 @@
 import { Input, Form, Spin, Select } from 'antd';
 import { useModalForm } from 'sunflower-antd/lib/useModalForm';
-import { IPerson, usePersonStore } from '../store/ZustandStore';
+import { IPerson } from '../store/ZustandStore';
 import { useEffect } from 'react';
 
 
 const { Option } = Select;
 
 interface IUpdateFormProps {
-    rows: IPerson[],
-    selectedRowId: string;
     initialValues?: IPerson;
     form: any;
 }
 
 
-export function UpdatePerson({ rows, selectedRowId, initialValues, form }: IUpdateFormProps) {
-    const { getPersons, putPerson, currentPage, } = usePersonStore();
+export function UpdatePerson({ initialValues, form }: IUpdateFormProps) {
 
     useEffect(() => {
         if (initialValues) {
@@ -30,11 +27,6 @@ export function UpdatePerson({ rows, selectedRowId, initialValues, form }: IUpda
         defaultVisible: false,
         autoSubmitClose: true,
         autoResetForm: true,
-        async submit(values) {
-            await putPerson(selectedRowId, rows, values)
-            getPersons(currentPage, 20);
-            return 'ok';
-        },
     });
 
     const prefixSelector = (

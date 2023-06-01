@@ -9,6 +9,7 @@ const headerStyle: React.CSSProperties = {
     justifyContent: 'space-around',
     alignItems: 'center',
     position: 'sticky',
+    top: 0,
     textAlign: 'center',
     color: '#fff',
     height: 64,
@@ -20,9 +21,12 @@ const headerStyle: React.CSSProperties = {
     background: '#fff',
     zIndex: '100'
 };
+
 export function Navbar() {
     return (
-        <Header style={headerStyle}>
+        <Header
+            style={headerStyle}
+        >
             <img
                 src="https://callapp.ge/wp-content/uploads/2021/04/Callapp-Logo-Dark.png"
                 alt="callapImg"
@@ -30,10 +34,10 @@ export function Navbar() {
             />
             <nav>
                 <Link to="/">
-                    <Button type='ghost' className='ant-btn-lg'>Home</Button>
+                    <Button type='text' className='ant-btn-lg'>Home</Button>
                 </Link>
                 <Link to="/chart">
-                    <Button type="ghost" className="ant-btn-lg">Chart</Button>
+                    <Button type="text" className="ant-btn-lg">Chart</Button>
                 </Link>
             </nav>
         </Header>

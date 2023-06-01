@@ -10,7 +10,28 @@ import { useModalForm } from 'sunflower-antd/lib/useModalForm';
 export function AntdTable() {
     const [formVal, setFormVal] = useState<IPerson>();
     const [selectedRowId, setSelectedRowId] = useState("");
-    const { getPersons, delPerson, rows, currentPage, allPersonsLength } = usePersonStore();
+    const { getPersons, putPerson, delPerson, rows, currentPage, allPersonsLength } = usePersonStore();
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const closeModal = () => {
+        setIsModalVisible(false);
+    };
+    const delConfirmModal = (record: IPerson) => {
+        Modal.confirm({
+            title: "Confirm deletion",
+            content: `Are you sure you want to delete ${record.name}?`,
+            onOk: () => { deletePerson(record) },
+            okText: "Delete",
+            okButtonProps: { danger: true },
+            cancelText: "Cancel"
+        })
+    }
+    const deletePerson = async (record: IPerson) => {
+        await delPerson(record.id, rows)
+            .then(() => getPersons(currentPage, 20))
+            .catch((error) => {
+                console.log("Error deleting person", error)
+            })
+    }
     // table cols
     const columns: ColumnsType<IPerson> = [
         {
@@ -48,7 +69,7 @@ export function AntdTable() {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button type='dashed' onClick={() => delPerson(record.id, rows).then(() => getPersons(currentPage, 20))}>Delete</Button>
+                    <Button type='text' danger={true} onClick={() => delConfirmModal(record)}>Delete</Button>
                 </Space>
             ),
         },
@@ -61,12 +82,13 @@ export function AntdTable() {
         autoSubmitClose: true,
         autoResetForm: true,
         form,
+        async submit(formValues) {
+            await putPerson(selectedRowId, rows, formValues)
+            getPersons(currentPage, 20);
+            closeModal();
+            return 'ok';
+        },
     });
-    const [isModalVisible, setIsModalVisible] = useState(false);
-
-    const closeModal = () => {
-        setIsModalVisible(false);
-    };
 
 
     useEffect(() => {
@@ -107,7 +129,7 @@ export function AntdTable() {
                 open={isModalVisible}
                 onCancel={closeModal}
             >
-                <UpdatePerson rows={rows} selectedRowId={selectedRowId} initialValues={formVal} form={form} />
+                <UpdatePerson initialValues={formVal} form={form} />
             </Modal>
         </>
     )
