@@ -58,14 +58,16 @@ export function Chart() {
 
     return (
         <div
+            className='chart'
             style={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                height: '100dvh',
+                marginTop: '50px',
                 width: '100%',
                 overflow: 'hidden'
-            }}>
+            }}
+        >
             <Pie {...config1} />
             <Pie {...config2} />
         </div>

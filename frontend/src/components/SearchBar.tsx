@@ -7,12 +7,12 @@ export function SearchBar() {
     return (
         <>
             <Input.Search
-                style={{ width: "250px" }}
                 placeholder="Search..."
                 enterButton={
-                    <Button type="primary" icon={<SearchOutlined />} />
+                    <Button type="link" icon={<SearchOutlined />} />
                 }
                 onChange={(e) => setWord(e.target.value)}
+                className='search-bar'
             />
         </>
     );

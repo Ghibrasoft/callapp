@@ -125,8 +125,8 @@ export function AntdTable() {
                 pagination={{
                     current: currentPage,
                     pageSize: 20,
-                    // pageSizeOptions: [10, 20, 50],
-                    showSizeChanger: false,
+                    // pageSizeOptions: [10, 20],
+                    // showSizeChanger: true,
                     total: allPersonsLength,
                     showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} persons`,
                     onChange: (currPage) => getPersons(currPage, 20)

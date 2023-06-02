@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import 'antd/dist/reset.css';
+import './style/index.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Chart } from './components/Chart';
 import { Navbar } from './components/Navbar';

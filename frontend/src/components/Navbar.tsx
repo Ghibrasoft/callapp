@@ -35,6 +35,7 @@ export function Navbar() {
                 alt="callapImg"
                 style={{ width: '130px', height: '40px', cursor: 'pointer' }}
                 onClick={() => navigate("/")}
+                className='callapp-img'
             />
 
             {/* navbar */}
